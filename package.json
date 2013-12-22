@@ -33,6 +33,7 @@
     "adm-zip": "~0.4.3"
   },
   "devDependencies": {
-    "mocha": "*"
+    "mocha": "*",
+    "gulp": "~3.2.0"
   }
 }
