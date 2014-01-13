@@ -17,7 +17,7 @@ module.exports = function (filename) {
 			firstFile = file;
 		}
 
-		var relativePath = file.path.replace(file.cwd + '/', '');
+		var relativePath = file.path.replace(file.cwd + path.sep, '');
 		zip.addFile(relativePath, file.contents);
 	}, function () {
 		if (!firstFile) {
