@@ -2,12 +2,17 @@
 var assert = require('assert');
 var gutil = require('gulp-util');
 var zip = require('./index');
+var path = require('path');
+
+function fixPath(p) {
+	return p.replace(/\//g, path.sep);
+}
 
 it('should zip files', function (cb) {
 	var stream = zip('test.zip');
 
 	stream.on('data', function (file) {
-		assert.equal(file.path, '~/dev/gulp-zip/test.zip');
+		assert.equal(fixPath(file.path), fixPath('~/dev/gulp-zip/test.zip'));
 		assert.equal(file.relative, 'test.zip');
 		assert(file.contents.length > 0);
 		cb();
