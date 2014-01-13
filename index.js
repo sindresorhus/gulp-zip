@@ -1,18 +1,27 @@
 'use strict';
 var path = require('path');
-var es = require('event-stream');
 var gutil = require('gulp-util');
+var through = require('through');
+var chalk = require('chalk');
 var AdmZip = require('adm-zip');
 
 module.exports = function (filename) {
 	if (!filename) {
-		throw new Error('Missing filename.');
+		throw new gutil.PluginError('gulp-zip', chalk.blue('filename') + ' required');
 	}
 
 	var firstFile;
 	var zip = new AdmZip();
 
-	return es.through(function (file) {
+	return through(function (file) {
+		if (file.isNull()) {
+			return;
+		}
+
+		if (file.isStream()) {
+			return this.emit('error', new gutil.PluginError('gulp-zip', 'Streaming not supported'));
+		}
+
 		if (!firstFile) {
 			firstFile = file;
 		}
@@ -21,7 +30,7 @@ module.exports = function (filename) {
 		zip.addFile(relativePath, file.contents);
 	}, function () {
 		if (!firstFile) {
-			return this.emit('end');
+			return this.queue(null);
 		}
 
 		var joinedPath = path.join(firstFile.cwd, filename);
@@ -32,7 +41,7 @@ module.exports = function (filename) {
 			contents: zip.toBuffer()
 		});
 
-		this.emit('data', joinedFile);
-		this.emit('end');
+		this.queue(joinedFile);
+		this.queue(null);
 	});
 };

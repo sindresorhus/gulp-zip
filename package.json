@@ -10,7 +10,7 @@
     "url": "http://sindresorhus.com"
   },
   "engines": {
-    "node": ">=0.8.0"
+    "node": ">=0.10.0"
   },
   "scripts": {
     "test": "mocha"
@@ -28,8 +28,9 @@
     "file"
   ],
   "dependencies": {
-    "event-stream": "~3.0.20",
     "gulp-util": "~2.2.0",
+    "through": "~2.3.4",
+    "chalk": "~0.4.0",
     "adm-zip": "~0.4.3"
   },
   "devDependencies": {
