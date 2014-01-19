@@ -1,7 +1,7 @@
 'use strict';
 var path = require('path');
 var gutil = require('gulp-util');
-var through = require('through');
+var through = require('through2');
 var chalk = require('chalk');
 var AdmZip = require('adm-zip');
 
@@ -13,13 +13,15 @@ module.exports = function (filename) {
 	var firstFile;
 	var zip = new AdmZip();
 
-	return through(function (file) {
+	return through.obj(function (file, enc, cb) {
 		if (file.isNull()) {
-			return;
+			this.push(file);
+			return cb();
 		}
 
 		if (file.isStream()) {
-			return this.emit('error', new gutil.PluginError('gulp-zip', 'Streaming not supported'));
+			this.emit('error', new gutil.PluginError('gulp-zip', 'Streaming not supported'));
+			return cb();
 		}
 
 		if (!firstFile) {
@@ -28,20 +30,18 @@ module.exports = function (filename) {
 
 		var relativePath = file.path.replace(file.cwd + path.sep, '');
 		zip.addFile(relativePath, file.contents);
-	}, function () {
+		cb()
+	}, function (cb) {
 		if (!firstFile) {
-			return this.queue(null);
+			return cb();
 		}
 
-		var joinedPath = path.join(firstFile.cwd, filename);
-		var joinedFile = new gutil.File({
+		this.push(new gutil.File({
 			cwd: firstFile.cwd,
 			base: firstFile.cwd,
-			path: joinedPath,
+			path: path.join(firstFile.cwd, filename),
 			contents: zip.toBuffer()
-		});
-
-		this.queue(joinedFile);
-		this.queue(null);
+		}));
+		cb();
 	});
 };
