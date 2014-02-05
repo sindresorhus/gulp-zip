@@ -28,7 +28,12 @@ gulp.task('default', function () {
 
 ## API
 
-### zip(filename)
+### zip(filename, options)
+#### options.prefix
+Type: `String`
+Default: `''`
+
+A filename prefix to append to each entry in the zip file. Use to alter the structure of your zip.
 
 
 ## License
