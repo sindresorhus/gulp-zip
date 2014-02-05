@@ -16,7 +16,7 @@ module.exports = function (filename, options) {
 
 	var firstFile;
 	var zip = new AdmZip();
-	var prefix = options.prefix + path.sep || '';
+	var prefix = options.prefix || '';
 
 	return through.obj(function (file, enc, cb) {
 		if (file.isNull()) {
