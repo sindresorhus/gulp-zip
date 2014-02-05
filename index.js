@@ -9,6 +9,10 @@ module.exports = function (filename, options) {
 	if (!filename) {
 		throw new gutil.PluginError('gulp-zip', chalk.blue('filename') + ' required');
 	}
+	
+	if(!options) {
+		options = {};
+	}
 
 	var firstFile;
 	var zip = new AdmZip();
