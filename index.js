@@ -5,7 +5,7 @@ var through = require('through2');
 var chalk = require('chalk');
 var AdmZip = require('adm-zip');
 
-module.exports = function (filename) {
+module.exports = function (filename, cwd) {
 	if (!filename) {
 		throw new gutil.PluginError('gulp-zip', chalk.blue('filename') + ' required');
 	}
@@ -29,6 +29,11 @@ module.exports = function (filename) {
 		}
 
 		var relativePath = file.path.replace(file.cwd + path.sep, '');
+
+		if (cwd) {
+			relativePath = path.relative(cwd, relativePath);
+		}
+
 		zip.addFile(relativePath, file.contents);
 		cb()
 	}, function (cb) {
