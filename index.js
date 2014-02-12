@@ -15,7 +15,6 @@ module.exports = function (filename) {
 
 	return through.obj(function (file, enc, cb) {
 		if (file.isNull()) {
-			this.push(file);
 			return cb();
 		}
 
