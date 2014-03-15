@@ -3,7 +3,7 @@ var path = require('path');
 var gutil = require('gulp-util');
 var through = require('through2');
 var chalk = require('chalk');
-var AdmZip = require('adm-zip');
+var JSZip = require('jszip');
 
 module.exports = function (filename) {
 	if (!filename) {
@@ -11,7 +11,7 @@ module.exports = function (filename) {
 	}
 
 	var firstFile;
-	var zip = new AdmZip();
+	var zip = new JSZip();
 
 	return through.obj(function (file, enc, cb) {
 		if (file.isNull()) {
@@ -29,7 +29,7 @@ module.exports = function (filename) {
 		}
 
 		var relativePath = file.path.replace(file.cwd + path.sep, '');
-		zip.addFile(relativePath, file.contents);
+		zip.file(relativePath, file.contents);
 		cb()
 	}, function (cb) {
 		if (!firstFile) {
@@ -40,7 +40,7 @@ module.exports = function (filename) {
 			cwd: firstFile.cwd,
 			base: firstFile.cwd,
 			path: path.join(firstFile.cwd, filename),
-			contents: zip.toBuffer()
+			contents: zip.generate({ type: "nodebuffer", compression: "DEFLATE" })
 		}));
 		cb();
 	});
