@@ -40,7 +40,7 @@ module.exports = function (filename) {
 			cwd: firstFile.cwd,
 			base: firstFile.cwd,
 			path: path.join(firstFile.cwd, filename),
-			contents: zip.generate({ type: "nodebuffer", compression: "DEFLATE" })
+			contents: zip.generate({ type: 'nodebuffer', compression: 'DEFLATE' })
 		}));
 		cb();
 	});
