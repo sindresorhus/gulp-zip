@@ -1,18 +1,16 @@
-# [gulp](https://github.com/wearefractal/gulp)-zip [![Build Status](https://secure.travis-ci.org/sindresorhus/gulp-zip.png?branch=master)](http://travis-ci.org/sindresorhus/gulp-zip)
+# [gulp](https://github.com/wearefractal/gulp)-zip [![Build Status](https://travis-ci.org/sindresorhus/gulp-zip.svg?branch=master)](https://travis-ci.org/sindresorhus/gulp-zip)
 
 > ZIP compress files
 
 
 ## Install
 
-Install with [npm](https://npmjs.org/package/gulp-zip)
-
-```
-npm install --save-dev gulp-zip
+```bash
+$ npm install --save-dev gulp-zip
 ```
 
 
-## Example
+## Usage
 
 ```js
 var gulp = require('gulp');
@@ -33,4 +31,4 @@ gulp.task('default', function () {
 
 ## License
 
-MIT © [Sindre Sorhus](http://sindresorhus.com)
+[MIT](http://opensource.org/licenses/MIT) © [Sindre Sorhus](http://sindresorhus.com)

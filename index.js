@@ -5,12 +5,9 @@ var through = require('through2');
 var chalk = require('chalk');
 var JSZip = require('jszip');
 
-module.exports = function (filename, opt) {
+module.exports = function (filename) {
 	if (!filename) {
 		throw new gutil.PluginError('gulp-zip', chalk.blue('filename') + ' required');
-	}
-	if (!opt) {
-		opt = {};
 	}
 
 	var firstFile;
@@ -18,7 +15,6 @@ module.exports = function (filename, opt) {
 
 	return through.obj(function (file, enc, cb) {
 		if (file.isNull()) {
-			this.push(file);
 			return cb();
 		}
 
@@ -33,7 +29,8 @@ module.exports = function (filename, opt) {
 
 		var relativePath = file.path.replace(file.cwd + path.sep, '');
 		zip.file(relativePath, file.contents);
-		cb()
+
+		cb();
 	}, function (cb) {
 		if (!firstFile) {
 			return cb();
@@ -43,8 +40,12 @@ module.exports = function (filename, opt) {
 			cwd: firstFile.cwd,
 			base: firstFile.cwd,
 			path: path.join(firstFile.cwd, filename),
-			contents: zip.generate({ type: 'nodebuffer', compression: opt.JSZipCompression || 'DEFLATE' })
+			contents: zip.generate({
+				type: 'nodebuffer',
+				compression: 'DEFLATE'
+			})
 		}));
+
 		cb();
 	});
 };
