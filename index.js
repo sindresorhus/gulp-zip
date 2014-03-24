@@ -28,6 +28,7 @@ module.exports = function (filename) {
 		}
 
 		var relativePath = file.path.replace(file.cwd + path.sep, '');
+		relativePath = relativePath.replace(file.base + path.sep, '');
 		zip.file(relativePath, file.contents);
 
 		cb();
