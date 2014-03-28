@@ -18,14 +18,20 @@ it('should zip files', function (cb) {
 		cwd: __dirname,
 		base: __dirname + '/fixture',
 		path: __dirname + '/fixture/fixture.txt',
-		contents: new Buffer('hello world')
+		contents: new Buffer('hello world'),
+		stat: {
+			mtime: new Date()
+		}
 	}));
 
 	stream.write(new gutil.File({
 		cwd: __dirname,
 		base: __dirname + '/fixture',
 		path: __dirname + '/fixture/fixture2.txt',
-		contents: new Buffer('hello world 2')
+		contents: new Buffer('hello world 2'),
+		stat: {
+			mtime: new Date()
+		}
 	}));
 
 	stream.end();

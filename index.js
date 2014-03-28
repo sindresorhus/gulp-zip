@@ -28,7 +28,9 @@ module.exports = function (filename) {
 			firstFile = file;
 		}
 
-		zip.file(file.relative, file.contents);
+		zip.file(file.relative, file.contents, {
+			date: file.stat.mtime
+		});
 
 		cb();
 	}, function (cb) {
