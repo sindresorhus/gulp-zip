@@ -15,6 +15,7 @@ module.exports = function (filename) {
 
 	return through.obj(function (file, enc, cb) {
 		if (file.isNull()) {
+			this.push(file);
 			return cb();
 		}
 
@@ -37,8 +38,8 @@ module.exports = function (filename) {
 
 		this.push(new gutil.File({
 			cwd: firstFile.cwd,
-			base: firstFile.cwd,
-			path: path.join(firstFile.cwd, filename),
+			base: firstFile.base,
+			path: path.join(firstFile.base, filename),
 			contents: zip.generate({
 				type: 'nodebuffer',
 				compression: 'DEFLATE'
