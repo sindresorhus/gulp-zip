@@ -15,7 +15,7 @@ module.exports = function (filename) {
 
 	return through.obj(function (file, enc, cb) {
 		if (file.isNull()) {
-			this.push(file);
+			// intentionally doesn't push to file so not to create empty folders
 			return cb();
 		}
 
