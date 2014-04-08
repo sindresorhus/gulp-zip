@@ -27,7 +27,10 @@ module.exports = function (filename) {
 			firstFile = file;
 		}
 
-		zip.file(file.relative, file.contents, {
+		// JSZip requires forward slashes to delimit directories
+		var pathname = file.relative.replace(/\\/g,"/");
+		
+		zip.file(pathname, file.contents, {
 			date: file.stat ? file.stat.mtime : new Date()
 		});
 
