@@ -1,6 +1,6 @@
 {
   "name": "gulp-zip",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "ZIP compress files",
   "license": "MIT",
   "repository": "sindresorhus/gulp-zip",
