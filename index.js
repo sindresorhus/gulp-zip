@@ -27,9 +27,9 @@ module.exports = function (filename) {
 			firstFile = file;
 		}
 
-		// JSZip requires forward slashes to delimit directories
-		var pathname = file.relative.replace(/\\/g,"/");
-		
+		// Because Windows...
+		var pathname = file.relative.replace(/\\/g, '/');
+
 		zip.file(pathname, file.contents, {
 			date: file.stat ? file.stat.mtime : new Date()
 		});
