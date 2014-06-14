@@ -26,7 +26,18 @@ gulp.task('default', function () {
 
 ## API
 
-### zip(filename)
+### zip(filename, options)
+
+#### filename
+
+*Required*
+Type: `string`
+
+#### options.comment
+
+Type: `string`
+
+Text information embedded in the zip file.
 
 
 ## License
