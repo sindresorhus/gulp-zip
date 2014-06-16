@@ -4,6 +4,7 @@ var gutil = require('gulp-util');
 var through = require('through2');
 var chalk = require('chalk');
 var JSZip = require('jszip');
+var fs = require('fs');
 
 module.exports = function (filename) {
 	if (!filename) {
@@ -30,7 +31,7 @@ module.exports = function (filename) {
 		// Because Windows...
 		var pathname = file.relative.replace(/\\/g, '/');
 
-		zip.file(pathname, file.contents, {
+		zip.file(pathname, fs.readFileSync(pathname), {
 			date: file.stat ? file.stat.mtime : new Date()
 		});
 
