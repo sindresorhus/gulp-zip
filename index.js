@@ -10,6 +10,10 @@ module.exports = function (filename, opts) {
 		throw new gutil.PluginError('gulp-zip', chalk.blue('filename') + ' required');
 	}
 
+	if (typeof filename !== 'string' && typeof filename !== 'function') {
+		throw new Error('Invalid parameters. Input filename can be a string or function');
+	}
+
 	opts = opts || {};
 
 	var firstFile;
@@ -42,10 +46,19 @@ module.exports = function (filename, opts) {
 			return cb();
 		}
 
+		var filepath;
+
+		if (typeof filename === 'string') {
+			filepath = path.resolve(firstFile.base, filename);
+		}
+		if (typeof filename === 'function') {
+			filepath = path.resolve(firstFile.base, filename());
+		}
+
 		this.push(new gutil.File({
 			cwd: firstFile.cwd,
 			base: firstFile.base,
-			path: path.join(firstFile.base, filename),
+			path: filepath,
 			contents: zip.generate({
 				type: 'nodebuffer',
 				compression: 'DEFLATE',
