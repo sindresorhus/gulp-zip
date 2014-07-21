@@ -33,7 +33,8 @@ module.exports = function (filename, opts) {
 		var pathname = file.relative.replace(/\\/g, '/');
 
 		zip.file(pathname, file.contents, {
-			date: file.stat ? file.stat.mtime : new Date()
+			date: file.stat ? file.stat.mtime : new Date(),
+			createFolders: true
 		});
 
 		cb();
