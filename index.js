@@ -31,8 +31,17 @@ module.exports = function (filename, opts) {
 
 		// Because Windows...
 		var pathname = file.relative.replace(/\\/g, '/');
+        
+		// ensure the corresponding folders are being created by
+		// using the corresponding folder functions.
+		var pathFragments = pathname.split('/');
+		var folderFragments = pathFragments.slice(0, -1);
+		var filename = pathFragments[pathFragments.length - 1];
+		var folder = folderFragments.reduce(function(parent, name) {
+			return parent.folder(name);
+		}, zip);
 
-		zip.file(pathname, file.contents, {
+		folder.file(filename, file.contents, {
 			date: file.stat ? file.stat.mtime : new Date()
 		});
 
