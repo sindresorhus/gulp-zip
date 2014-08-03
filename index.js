@@ -11,6 +11,7 @@ module.exports = function (filename, opts) {
 	}
 
 	opts = opts || {};
+	opts.compress = typeof compress === 'boolean' ? opts.compress : true;
 
 	var firstFile;
 	var zip = new JSZip();
@@ -49,7 +50,7 @@ module.exports = function (filename, opts) {
 			path: path.join(firstFile.base, filename),
 			contents: zip.generate({
 				type: 'nodebuffer',
-				compression: 'DEFLATE',
+				compression: opts.compress ? 'DEFLATE' : 'STORE',
 				comment: opts.comment
 			})
 		}));

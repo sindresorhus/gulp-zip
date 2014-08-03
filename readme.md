@@ -30,10 +30,17 @@ gulp.task('default', function () {
 
 #### filename
 
-*Required*
+*Required*  
 Type: `string`
 
-#### options.comment
+#### options
+
+##### compress
+
+Type: `boolean`  
+Default: `true`
+
+##### comment
 
 Type: `string`
 
