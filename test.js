@@ -2,17 +2,18 @@
 var path = require('path');
 var assert = require('assert');
 var gutil = require('gulp-util');
-var zip = require('./index');
+var zip = require('./');
 
 it('should zip files', function (cb) {
 	var stream = zip('test.zip');
 
-	stream.on('data', function (file) {
+	stream.once('data', function (file) {
 		assert.equal(path.normalize(file.path), path.join(__dirname, './fixture/test.zip'));
 		assert.equal(file.relative, 'test.zip');
 		assert(file.contents.length > 0);
-		cb();
 	});
+
+	stream.on('end', cb);
 
 	stream.write(new gutil.File({
 		cwd: __dirname,

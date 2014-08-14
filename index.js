@@ -18,19 +18,20 @@ module.exports = function (filename, opts) {
 
 	return through.obj(function (file, enc, cb) {
 		if (file.isNull()) {
-			return cb();
+			cb();
+			return;
 		}
 
 		if (file.isStream()) {
-			this.emit('error', new gutil.PluginError('gulp-zip', 'Streaming not supported'));
-			return cb();
+			cb(new gutil.PluginError('gulp-zip', 'Streaming not supported'));
+			return;
 		}
 
 		if (!firstFile) {
 			firstFile = file;
 		}
 
-		// Because Windows...
+		// because Windows...
 		var pathname = file.relative.replace(/\\/g, '/');
 
 		zip.file(pathname, file.contents, {
@@ -41,10 +42,11 @@ module.exports = function (filename, opts) {
 		cb();
 	}, function (cb) {
 		if (!firstFile) {
-			return cb();
+			cb();
+			return;
 		}
 
-		this.push(new gutil.File({
+		cb(null, new gutil.File({
 			cwd: firstFile.cwd,
 			base: firstFile.base,
 			path: path.join(firstFile.base, filename),
@@ -54,7 +56,5 @@ module.exports = function (filename, opts) {
 				comment: opts.comment
 			})
 		}));
-
-		cb();
 	});
 };
