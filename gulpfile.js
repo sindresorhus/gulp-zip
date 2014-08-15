@@ -1,8 +1,9 @@
+'use strict';
 var gulp = require('gulp');
-var zip = require('./index');
+var zip = require('./');
 
 gulp.task('default', function () {
-	gulp.src('fixture/fixture.txt')
+	return gulp.src('fixture/fixture.txt')
 		.pipe(zip('test.zip'))
 		.pipe(gulp.dest('dest'));
 });

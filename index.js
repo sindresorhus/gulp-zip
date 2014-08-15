@@ -46,7 +46,7 @@ module.exports = function (filename, opts) {
 			return;
 		}
 
-		cb(null, new gutil.File({
+		this.push(new gutil.File({
 			cwd: firstFile.cwd,
 			base: firstFile.base,
 			path: path.join(firstFile.base, filename),
@@ -56,5 +56,7 @@ module.exports = function (filename, opts) {
 				comment: opts.comment
 			})
 		}));
+
+		cb();
 	});
 };
