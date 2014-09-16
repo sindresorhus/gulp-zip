@@ -11,7 +11,7 @@ module.exports = function (filename, opts) {
 	}
 
 	opts = opts || {};
-	opts.compress = typeof compress === 'boolean' ? opts.compress : true;
+	opts.compress = typeof opts.compress === 'boolean' ? opts.compress : true;
 
 	var firstFile;
 	var zip = new JSZip();
