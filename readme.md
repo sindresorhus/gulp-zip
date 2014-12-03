@@ -40,6 +40,12 @@ Type: `string`
 Type: `boolean`  
 Default: `true`
 
+##### dest
+
+Type: `string`
+
+Path to destination directory in the zip file.
+
 ##### comment
 
 Type: `string`
