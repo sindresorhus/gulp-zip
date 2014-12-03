@@ -34,6 +34,11 @@ module.exports = function (filename, opts) {
 		// because Windows...
 		var pathname = file.relative.replace(/\\/g, '/');
 
+		// Path to destination directory in the zip file
+		if(typeof opts.dest === "string") {
+			pathname = opts.dest + "/" + pathname;
+		}
+
 		zip.file(pathname, file.contents, {
 			date: file.stat ? file.stat.mtime : new Date(),
 			createFolders: true
