@@ -3,7 +3,8 @@ var path = require('path');
 var gutil = require('gulp-util');
 var through = require('through2');
 var chalk = require('chalk');
-var JSZip = require('jszip');
+var Yazl = require('yazl');
+var concatStream = require('concat-stream');
 
 module.exports = function (filename, opts) {
 	if (!filename) {
@@ -14,7 +15,7 @@ module.exports = function (filename, opts) {
 	opts.compress = typeof opts.compress === 'boolean' ? opts.compress : true;
 
 	var firstFile;
-	var zip = new JSZip();
+	var zip = new Yazl.ZipFile();
 
 	return through.obj(function (file, enc, cb) {
 		if (file.isStream()) {
@@ -29,10 +30,10 @@ module.exports = function (filename, opts) {
 		// because Windows...
 		var pathname = file.relative.replace(/\\/g, '/');
 
-		zip.file(pathname, file.contents, {
-			date: file.stat ? file.stat.mtime : new Date(),
-			createFolders: true,
-			dir: file.stat && file.stat.isDirectory && file.stat.isDirectory()
+		zip.addBuffer(file.contents, pathname, {
+			compress: opts.compress,
+			mtime: file.stat ? file.stat.mtime : new Date(),
+			mode: file.stat ? file.stat.mode : null
 		});
 
 		cb();
@@ -42,17 +43,17 @@ module.exports = function (filename, opts) {
 			return;
 		}
 
-		this.push(new gutil.File({
-			cwd: firstFile.cwd,
-			base: firstFile.base,
-			path: path.join(firstFile.base, filename),
-			contents: zip.generate({
-				type: 'nodebuffer',
-				compression: opts.compress ? 'DEFLATE' : 'STORE',
-				comment: opts.comment
-			})
-		}));
+		zip.end(function () {
+			zip.outputStream.pipe(concatStream(function (data) {
+				this.push(new gutil.File({
+					cwd: firstFile.cwd,
+					base: firstFile.base,
+					path: path.join(firstFile.base, filename),
+					contents: data
+				}));
 
-		cb();
+				cb();
+			}.bind(this)));
+		}.bind(this));
 	});
 };

@@ -40,12 +40,6 @@ Type: `string`
 Type: `boolean`  
 Default: `true`
 
-##### comment
-
-Type: `string`
-
-Text information embedded in the zip file.
-
 
 ## License
 
