@@ -28,7 +28,7 @@
     "file"
   ],
   "dependencies": {
-    "chalk": "^0.5.1",
+    "chalk": "^1.0.0",
     "gulp-util": "^3.0.0",
     "jszip": "^2.4.0",
     "through2": "^0.6.1"
