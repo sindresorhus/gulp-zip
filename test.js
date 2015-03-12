@@ -42,16 +42,3 @@ it('should zip files', function (cb) {
 
 	stream.end();
 });
-
-it('should not push empty files', function (cb) {
-	var stream = zip('test.zip');
-
-	stream.on('data', assert.bind(null, false));
-	stream.on('end', cb);
-
-	stream.write(new gutil.File({
-		path: __dirname + 'fixture.txt'
-	}));
-
-	stream.end();
-});

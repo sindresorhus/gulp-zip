@@ -17,11 +17,6 @@ module.exports = function (filename, opts) {
 	var zip = new JSZip();
 
 	return through.obj(function (file, enc, cb) {
-		if (file.isNull()) {
-			cb();
-			return;
-		}
-
 		if (file.isStream()) {
 			cb(new gutil.PluginError('gulp-zip', 'Streaming not supported'));
 			return;
@@ -36,7 +31,8 @@ module.exports = function (filename, opts) {
 
 		zip.file(pathname, file.contents, {
 			date: file.stat ? file.stat.mtime : new Date(),
-			createFolders: true
+			createFolders: true,
+			dir: file.stat && file.stat.isDirectory && file.stat.isDirectory()
 		});
 
 		cb();
