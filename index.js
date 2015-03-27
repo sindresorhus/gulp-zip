@@ -18,7 +18,7 @@ module.exports = function (filename, opts) {
 	var zip = new Yazl.ZipFile();
 
 	return through.obj(function (file, enc, cb) {
-		if(!file.contents){
+		if (!file.contents) {
 			cb();
 			return;
 		}
