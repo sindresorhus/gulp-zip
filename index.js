@@ -30,11 +30,18 @@ module.exports = function (filename, opts) {
 		// because Windows...
 		var pathname = file.relative.replace(/\\/g, '/');
 
-		zip.addBuffer(file.contents, pathname, {
-			compress: opts.compress,
-			mtime: file.stat ? file.stat.mtime : new Date(),
-			mode: file.stat ? file.stat.mode : null
-		});
+		if (file.isNull() && file.stat && file.stat.isDirectory && file.stat.isDirectory()) {
+			zip.addEmptyDirectory(pathname, {
+				mtime: file.stat.mtime || new Date(),
+				mode: file.stat.mode || null
+			});
+		} else {
+			zip.addBuffer(file.contents, pathname, {
+				compress: opts.compress,
+				mtime: file.stat ? file.stat.mtime : new Date(),
+				mode: file.stat ? file.stat.mode : null
+			});
+		}
 
 		cb();
 	}, function (cb) {
