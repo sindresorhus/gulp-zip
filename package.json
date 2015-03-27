@@ -29,12 +29,15 @@
   ],
   "dependencies": {
     "chalk": "^1.0.0",
+    "concat-stream": "^1.4.7",
     "gulp-util": "^3.0.0",
-    "jszip": "^2.4.0",
-    "through2": "^0.6.1"
+    "through2": "^0.6.1",
+    "yazl": "^2.1.0"
   },
   "devDependencies": {
+    "decompress-unzip": "*",
+    "gulp": "*",
     "mocha": "*",
-    "gulp": "*"
+    "vinyl-assign": "*"
   }
 }
