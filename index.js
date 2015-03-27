@@ -18,6 +18,10 @@ module.exports = function (filename, opts) {
 	var zip = new Yazl.ZipFile();
 
 	return through.obj(function (file, enc, cb) {
+		if(!file.contents){
+			cb();
+			return;
+		}
 		if (file.isStream()) {
 			cb(new gutil.PluginError('gulp-zip', 'Streaming not supported'));
 			return;
