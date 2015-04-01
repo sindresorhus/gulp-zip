@@ -55,3 +55,37 @@ it('should zip files', function (cb) {
 	stream.pipe(vinylAssign({extract:true})).pipe(unzipper);
 	stream.end();
 });
+
+it('should not skip empty directories', function (cb) {
+	var stream = zip('test.zip');
+	var unzipper = unzip();
+	var files = [];
+	var stats = {
+		isDirectory: function () {
+			return true;
+		}
+	};
+
+	unzipper.on('data', files.push.bind(files));
+	unzipper.on('end', function () {
+		assert.equal(files[0].path, 'foo');
+		cb();
+	});
+
+	stream.on('data', function (file) {
+		assert.equal(path.normalize(file.path), path.join(__dirname, 'test.zip'));
+		assert.equal(file.relative, 'test.zip');
+		assert(file.contents.length > 0);
+	});
+
+	stream.write(new gutil.File({
+		cwd: __dirname,
+		base: __dirname,
+		path: __dirname + '/foo',
+		contents: null,
+		stat: stats
+	}));
+
+	stream.pipe(vinylAssign({extract:true})).pipe(unzipper);
+	stream.end();
+});
