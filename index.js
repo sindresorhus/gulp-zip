@@ -37,8 +37,7 @@ module.exports = function (filename, opts) {
 
 		if (file.isNull() && file.stat && file.stat.isDirectory && file.stat.isDirectory()) {
 			zip.addEmptyDirectory(pathname, {
-				mtime: file.stat.mtime || new Date(),
-				mode: file.stat.mode || null
+				mtime: file.stat.mtime || new Date()
 			});
 		} else {
 			zip.addBuffer(file.contents, pathname, {
