@@ -13,10 +13,10 @@ $ npm install --save-dev gulp-zip
 ## Usage
 
 ```js
-var gulp = require('gulp');
-var zip = require('gulp-zip');
+const gulp = require('gulp');
+const zip = require('gulp-zip');
 
-gulp.task('default', function () {
+gulp.task('default', () => {
 	return gulp.src('src/*')
 		.pipe(zip('archive.zip'))
 		.pipe(gulp.dest('dist'));
@@ -26,18 +26,19 @@ gulp.task('default', function () {
 
 ## API
 
+Supports [streaming mode](https://github.com/gulpjs/gulp/blob/master/docs/API.md#optionsbuffer).
+
 ### zip(filename, options)
 
 #### filename
 
-*Required*  
 Type: `string`
 
 #### options
 
 ##### compress
 
-Type: `boolean`  
+Type: `boolean`<br>
 Default: `true`
 
 
