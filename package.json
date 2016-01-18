@@ -38,6 +38,7 @@
     "decompress-unzip": "*",
     "gulp": "*",
     "mocha": "*",
-    "vinyl-assign": "*"
+    "vinyl-assign": "*",
+    "vinyl-file": "^2.0.0"
   }
 }
