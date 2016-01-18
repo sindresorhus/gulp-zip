@@ -5,6 +5,7 @@ var assert = require('assert');
 var gutil = require('gulp-util');
 var unzip = require('decompress-unzip');
 var vinylAssign = require('vinyl-assign');
+var vinylFile = require('vinyl-file');
 var zip = require('./');
 
 it('should zip files', function (cb) {
@@ -54,6 +55,31 @@ it('should zip files', function (cb) {
 
 	stream.pipe(vinylAssign({extract:true})).pipe(unzipper);
 	stream.end();
+});
+
+it('should zip files (using streams)', function (cb) {
+	var file = vinylFile.readSync(path.join(__dirname, 'fixture/fixture.txt'), {buffer: false});
+	var stats = fs.statSync(__dirname + '/fixture/fixture.txt');
+	var stream = zip('test.zip');
+	var unzipper = unzip();
+	var files = [];
+
+	unzipper.on('data', files.push.bind(files));
+	unzipper.on('end', function () {
+		assert.equal(files[0].path, 'fixture/fixture.txt');
+		assert.equal(files[0].contents.toString(), 'hello world\n');
+		assert.equal(files[0].stat.mode, stats.mode);
+		cb();
+	});
+
+	stream.on('data', function (file) {
+		assert.equal(path.normalize(file.path), path.join(__dirname, 'test.zip'));
+		assert.equal(file.relative, 'test.zip');
+		assert(file.contents.length > 0);
+	});
+
+	stream.pipe(vinylAssign({extract:true})).pipe(unzipper);
+	stream.end(file);
 });
 
 it('should not skip empty directories', function (cb) {

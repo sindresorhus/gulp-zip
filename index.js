@@ -18,11 +18,6 @@ module.exports = function (filename, opts) {
 	var zip = new Yazl.ZipFile();
 
 	return through.obj(function (file, enc, cb) {
-		if (file.isStream()) {
-			cb(new gutil.PluginError('gulp-zip', 'Streaming not supported'));
-			return;
-		}
-
 		if (!firstFile) {
 			firstFile = file;
 		}
@@ -41,11 +36,19 @@ module.exports = function (filename, opts) {
 				mode: file.stat.mode
 			});
 		} else {
-			zip.addBuffer(file.contents, pathname, {
+			var stat = {
 				compress: opts.compress,
 				mtime: file.stat ? file.stat.mtime : new Date(),
 				mode: file.stat ? file.stat.mode : null
-			});
+			};
+
+			if (file.isStream()) {
+				zip.addReadStream(file.contents, pathname, stat);
+			}
+
+			if (file.isBuffer()) {
+				zip.addBuffer(file.contents, pathname, stat);
+			}
 		}
 
 		cb();
