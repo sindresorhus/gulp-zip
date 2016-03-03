@@ -6,6 +6,8 @@ var chalk = require('chalk');
 var Yazl = require('yazl');
 var concatStream = require('concat-stream');
 
+var presetDirMode = process.platform == 'win32' ? parseInt('755', 8) : undefined;
+
 module.exports = function (filename, opts) {
 	if (!filename) {
 		throw new gutil.PluginError('gulp-zip', chalk.blue('filename') + ' required');
@@ -33,7 +35,7 @@ module.exports = function (filename, opts) {
 		if (file.isNull() && file.stat && file.stat.isDirectory && file.stat.isDirectory()) {
 			zip.addEmptyDirectory(pathname, {
 				mtime: file.stat.mtime || new Date(),
-				mode: file.stat.mode
+				mode: presetDirMode || file.stat.mode
 			});
 		} else {
 			var stat = {
