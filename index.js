@@ -6,7 +6,7 @@ var chalk = require('chalk');
 var Yazl = require('yazl');
 var concatStream = require('concat-stream');
 
-var presetDirMode = process.platform == 'win32' ? parseInt('755', 8) : undefined;
+var presetDirMode = process.platform == 'win32' ? parseInt('775', 8) : undefined;
 
 module.exports = function (filename, opts) {
 	if (!filename) {
