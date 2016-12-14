@@ -13,6 +13,7 @@ module.exports = function (filename, opts) {
 
 	opts = opts || {};
 	opts.compress = typeof opts.compress === 'boolean' ? opts.compress : true;
+	opts.mode = typeof opts.mode === 'number' ? parseInt(opts.mode, 10) : null;
 
 	var firstFile;
 	var zip = new Yazl.ZipFile();
@@ -33,13 +34,13 @@ module.exports = function (filename, opts) {
 		if (file.isNull() && file.stat && file.stat.isDirectory && file.stat.isDirectory()) {
 			zip.addEmptyDirectory(pathname, {
 				mtime: file.stat.mtime || new Date(),
-				mode: file.stat.mode
+				mode: opts.mode === null ? file.stat.mode : opts.mode
 			});
 		} else {
 			var stat = {
 				compress: opts.compress,
 				mtime: file.stat ? file.stat.mtime : new Date(),
-				mode: file.stat ? file.stat.mode : null
+				mode: opts.mode === null ? (file.stat ? file.stat.mode : null) : opts.mode
 			};
 
 			if (file.isStream()) {

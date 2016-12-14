@@ -41,6 +41,10 @@ Type: `string`
 Type: `boolean`<br>
 Default: `true`
 
+##### mode
+
+Type: `integer`<br>
+
 
 ## License
 
