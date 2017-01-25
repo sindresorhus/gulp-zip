@@ -1,29 +1,29 @@
 'use strict';
-var path = require('path');
-var gutil = require('gulp-util');
-var through = require('through2');
-var chalk = require('chalk');
-var Yazl = require('yazl');
-var concatStream = require('concat-stream');
+const path = require('path');
+const gutil = require('gulp-util');
+const through = require('through2');
+const Yazl = require('yazl');
+const getStream = require('get-stream');
 
-module.exports = function (filename, opts) {
+module.exports = (filename, opts) => {
 	if (!filename) {
-		throw new gutil.PluginError('gulp-zip', chalk.blue('filename') + ' required');
+		throw new gutil.PluginError('gulp-zip', '`filename` required');
 	}
 
-	opts = opts || {};
-	opts.compress = typeof opts.compress === 'boolean' ? opts.compress : true;
+	opts = Object.assign({
+		compress: true
+	}, opts);
 
-	var firstFile;
-	var zip = new Yazl.ZipFile();
+	let firstFile;
+	const zip = new Yazl.ZipFile();
 
-	return through.obj(function (file, enc, cb) {
+	return through.obj((file, enc, cb) => {
 		if (!firstFile) {
 			firstFile = file;
 		}
 
-		// because Windows...
-		var pathname = file.relative.replace(/\\/g, '/');
+		// Because Windows...
+		const pathname = file.relative.replace(/\\/g, '/');
 
 		if (!pathname) {
 			cb();
@@ -36,7 +36,7 @@ module.exports = function (filename, opts) {
 				mode: file.stat.mode
 			});
 		} else {
-			var stat = {
+			const stat = {
 				compress: opts.compress,
 				mtime: file.stat ? file.stat.mtime : new Date(),
 				mode: file.stat ? file.stat.mode : null
@@ -58,17 +58,17 @@ module.exports = function (filename, opts) {
 			return;
 		}
 
-		zip.end(function () {
-			zip.outputStream.pipe(concatStream(function (data) {
-				this.push(new gutil.File({
-					cwd: firstFile.cwd,
-					base: firstFile.base,
-					path: path.join(firstFile.base, filename),
-					contents: data
-				}));
+		getStream.buffer(zip.outputStream).then(data => {
+			this.push(new gutil.File({
+				cwd: firstFile.cwd,
+				base: firstFile.base,
+				path: path.join(firstFile.base, filename),
+				contents: data
+			}));
 
-				cb();
-			}.bind(this)));
-		}.bind(this));
+			cb(); // eslint-disable-line promise/no-callback-in-promise
+		});
+
+		zip.end();
 	});
 };

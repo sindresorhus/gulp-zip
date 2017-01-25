@@ -1,9 +1,9 @@
 'use strict';
-var gulp = require('gulp');
-var zip = require('./');
+const gulp = require('gulp');
+const zip = require('.');
 
-gulp.task('default', function () {
-	return gulp.src('fixture/fixture.txt')
+gulp.task('default', () =>
+	gulp.src('fixture/fixture.txt')
 		.pipe(zip('test.zip'))
-		.pipe(gulp.dest('dest'));
-});
+		.pipe(gulp.dest('dest'))
+);

@@ -16,11 +16,11 @@ $ npm install --save-dev gulp-zip
 const gulp = require('gulp');
 const zip = require('gulp-zip');
 
-gulp.task('default', () => {
-	return gulp.src('src/*')
+gulp.task('default', () =>
+	gulp.src('src/*')
 		.pipe(zip('archive.zip'))
-		.pipe(gulp.dest('dist'));
-});
+		.pipe(gulp.dest('dist'))
+);
 ```
 
 
@@ -28,13 +28,15 @@ gulp.task('default', () => {
 
 Supports [streaming mode](https://github.com/gulpjs/gulp/blob/master/docs/API.md#optionsbuffer).
 
-### zip(filename, options)
+### zip(filename, [options])
 
 #### filename
 
 Type: `string`
 
 #### options
+
+Type: `Object`
 
 ##### compress
 
@@ -44,4 +46,4 @@ Default: `true`
 
 ## License
 
-MIT © [Sindre Sorhus](http://sindresorhus.com)
+MIT © [Sindre Sorhus](https://sindresorhus.com)

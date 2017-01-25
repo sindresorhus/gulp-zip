@@ -7,13 +7,13 @@
   "author": {
     "name": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "http://sindresorhus.com"
+    "url": "sindresorhus.com"
   },
   "engines": {
-    "node": ">=0.10.0"
+    "node": ">=4"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "xo && ava"
   },
   "files": [
     "index.js"
@@ -28,17 +28,17 @@
     "file"
   ],
   "dependencies": {
-    "chalk": "^1.0.0",
-    "concat-stream": "^1.4.7",
+    "get-stream": "^3.0.0",
     "gulp-util": "^3.0.0",
     "through2": "^2.0.1",
     "yazl": "^2.1.0"
   },
   "devDependencies": {
-    "decompress-unzip": "*",
-    "gulp": "*",
-    "mocha": "*",
-    "vinyl-assign": "*",
-    "vinyl-file": "^2.0.0"
+    "ava": "*",
+    "decompress-unzip": "^3.0.0",
+    "gulp": "^3.9.1",
+    "vinyl-assign": "^1.2.1",
+    "vinyl-file": "^3.0.0",
+    "xo": "*"
   }
 }
