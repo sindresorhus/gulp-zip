@@ -34,7 +34,7 @@ test.cb('should zip files', t => {
 		cwd: __dirname,
 		base: path.join(__dirname, 'fixture'),
 		path: path.join(__dirname, 'fixture/fixture.txt'),
-		contents: new Buffer('hello world'),
+		contents: Buffer.from('hello world'),
 		stat: {
 			mode: stats.mode,
 			mtime: stats.mtime
@@ -45,7 +45,7 @@ test.cb('should zip files', t => {
 		cwd: __dirname,
 		base: path.join(__dirname, 'fixture'),
 		path: path.join(__dirname, 'fixture/fixture2.txt'),
-		contents: new Buffer('hello world 2'),
+		contents: Buffer.from('hello world 2'),
 		stat: {
 			mode: stats.mode,
 			mtime: stats.mtime

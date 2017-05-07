@@ -66,7 +66,7 @@ module.exports = (filename, opts) => {
 				contents: data
 			}));
 
-			cb(); // eslint-disable-line promise/no-callback-in-promise
+			cb();
 		});
 
 		zip.end();
