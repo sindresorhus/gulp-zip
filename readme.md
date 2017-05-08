@@ -23,6 +23,27 @@ gulp.task('default', () =>
 );
 ```
 
+### Maintain Directory Structure
+
+Add `{base: "."}` to src to maintain the directory structure
+
+```js
+var gulp = require('gulp');
+var zip = require('gulp-zip');
+
+gulp.task('default', function () {
+	return gulp.src([
+                'index.html',
+                'css/**',
+                'js/**',
+                'lib/**',
+                'images/**',
+                'plugin/**'
+            ], {base: "."}))
+		.pipe(zip('archive.zip'))
+		.pipe(gulp.dest('dist'));
+});
+```
 
 ## API
 
