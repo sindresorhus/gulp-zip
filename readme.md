@@ -23,6 +23,17 @@ gulp.task('default', () =>
 );
 ```
 
+#### Note:
+
+When running on Windows, you may need to include `nodir: true` in order to avoid permission-related issues on subfolders:
+```js
+gulp.task('default', () =>
+	gulp.src('src/*', {nodir: true})
+		.pipe(zip('archive.zip'))
+		.pipe(gulp.dest('dist'))
+);
+```
+
 
 ## API
 
