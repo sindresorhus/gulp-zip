@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import test from 'ava';
-import gutil from 'gulp-util';
+import Vinyl from 'vinyl';
 import unzip from 'decompress-unzip';
 import vinylAssign from 'vinyl-assign';
 import vinylFile from 'vinyl-file';
@@ -30,7 +30,7 @@ test.cb('should zip files', t => {
 		t.true(file.contents.length > 0);
 	});
 
-	stream.write(new gutil.File({
+	stream.write(new Vinyl({
 		cwd: __dirname,
 		base: path.join(__dirname, 'fixture'),
 		path: path.join(__dirname, 'fixture/fixture.txt'),
@@ -41,7 +41,7 @@ test.cb('should zip files', t => {
 		}
 	}));
 
-	stream.write(new gutil.File({
+	stream.write(new Vinyl({
 		cwd: __dirname,
 		base: path.join(__dirname, 'fixture'),
 		path: path.join(__dirname, 'fixture/fixture2.txt'),
@@ -103,7 +103,7 @@ test.cb('should not skip empty directories', t => {
 		t.true(file.contents.length > 0);
 	});
 
-	stream.write(new gutil.File({
+	stream.write(new Vinyl({
 		cwd: __dirname,
 		base: __dirname,
 		path: path.join(__dirname, 'foo'),
