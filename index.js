@@ -1,13 +1,14 @@
 'use strict';
 const path = require('path');
-const gutil = require('gulp-util');
+const Vinyl = require('vinyl');
+const PluginError = require('plugin-error');
 const through = require('through2');
 const Yazl = require('yazl');
 const getStream = require('get-stream');
 
 module.exports = (filename, opts) => {
 	if (!filename) {
-		throw new gutil.PluginError('gulp-zip', '`filename` required');
+		throw new PluginError('gulp-zip', '`filename` required');
 	}
 
 	opts = Object.assign({
@@ -59,7 +60,7 @@ module.exports = (filename, opts) => {
 		}
 
 		getStream.buffer(zip.outputStream).then(data => {
-			this.push(new gutil.File({
+			this.push(new Vinyl({
 				cwd: firstFile.cwd,
 				base: firstFile.base,
 				path: path.join(firstFile.base, filename),
