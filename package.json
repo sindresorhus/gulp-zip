@@ -1,45 +1,45 @@
 {
-	"name": "gulp-zip",
-	"version": "4.0.0",
-	"description": "ZIP compress files",
-	"license": "MIT",
-	"repository": "sindresorhus/gulp-zip",
-	"author": {
-		"name": "Sindre Sorhus",
-		"email": "sindresorhus@gmail.com",
-		"url": "sindresorhus.com"
-	},
-	"engines": {
-		"node": ">=4"
-	},
-	"scripts": {
-		"test": "xo && ava"
-	},
-	"files": [
-		"index.js"
-	],
-	"keywords": [
-		"gulpplugin",
-		"zip",
-		"archive",
-		"archiver",
-		"compress",
-		"compression",
-		"file"
-	],
-	"dependencies": {
-		"get-stream": "^3.0.0",
-		"plugin-error": "^0.1.2",
-		"through2": "^2.0.1",
-		"vinyl": "^2.1.0",
-		"yazl": "^2.1.0"
-	},
-	"devDependencies": {
-		"ava": "*",
-		"decompress-unzip": "^3.0.0",
-		"gulp": "^3.9.1",
-		"vinyl-assign": "^1.2.1",
-		"vinyl-file": "^3.0.0",
-		"xo": "*"
-	}
+  "name": "gulp-zip",
+  "version": "4.1.0",
+  "description": "ZIP compress files",
+  "license": "MIT",
+  "repository": "sindresorhus/gulp-zip",
+  "author": {
+    "name": "Sindre Sorhus",
+    "email": "sindresorhus@gmail.com",
+    "url": "sindresorhus.com"
+  },
+  "engines": {
+    "node": ">=4"
+  },
+  "scripts": {
+    "test": "xo && ava"
+  },
+  "files": [
+    "index.js"
+  ],
+  "keywords": [
+    "gulpplugin",
+    "zip",
+    "archive",
+    "archiver",
+    "compress",
+    "compression",
+    "file"
+  ],
+  "dependencies": {
+    "get-stream": "^3.0.0",
+    "plugin-error": "^0.1.2",
+    "through2": "^2.0.1",
+    "vinyl": "^2.1.0",
+    "yazl": "^2.1.0"
+  },
+  "devDependencies": {
+    "ava": "*",
+    "decompress-unzip": "^3.0.0",
+    "gulp": "^3.9.1",
+    "vinyl-assign": "^1.2.1",
+    "vinyl-file": "^3.0.0",
+    "xo": "*"
+  }
 }
