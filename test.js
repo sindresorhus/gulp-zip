@@ -117,12 +117,12 @@ test.cb('should not skip empty directories', t => {
 	stream.end();
 });
 
-test.cb(`when 'options.mtimes' is specified, should override files' actual mtimes`, t => {
+test.cb('when `options.modifiedTime` is specified, should override files\' actual `mtime`s', t => {
 	// Create an arbitrary modification timestamp.
-	const mtime = new Date();
+	const modifiedTime = new Date();
 
 	// Set up a pipeline to zip and unzip files.
-	const stream = zip('test.zip', {mtime});
+	const stream = zip('test.zip', {modifiedTime});
 	const unzipper = unzip();
 	stream.pipe(vinylAssign({extract: true})).pipe(unzipper);
 
@@ -134,7 +134,7 @@ test.cb(`when 'options.mtimes' is specified, should override files' actual mtime
 	// timestamp (to the granularity that the zip format supports).
 	unzipper.on('end', () => {
 		for (const file of files) {
-			t.deepEqual(yazl.dateToDosDateTime(file.stat.mtime), yazl.dateToDosDateTime(mtime));
+			t.deepEqual(yazl.dateToDosDateTime(file.stat.mtime), yazl.dateToDosDateTime(modifiedTime));
 		}
 		t.end();
 	});
@@ -159,20 +159,20 @@ test.cb(`when 'options.mtimes' is specified, should override files' actual mtime
 	stream.end();
 });
 
-test.cb(`when 'options.mtime' is specified, should create identical zips when ` +
-	`file timestamps change but their content doesn't`, t => {
+test.cb('when `options.modifiedTime` is specified, should create identical zips when ' +
+	'files\' `mtime`s change but their content doesn\'t', t => {
 	// Create an arbitrary modification timestamp.
-	const mtime = new Date();
+	const modifiedTime = new Date();
 
 	// Set up two independent pipelines to create and capture zip files as a Vinyl objects.
-	const stream1 = zip('test1.zip', {mtime});
+	const stream1 = zip('test1.zip', {modifiedTime});
 	let zipFile1;
 	stream1.pipe(through2.obj((chunk, encoding, callback) => {
 		zipFile1 = chunk;
 		callback();
 	}));
 
-	const stream2 = zip('test2.zip', {mtime});
+	const stream2 = zip('test2.zip', {modifiedTime});
 	let zipFile2;
 	stream2.pipe(through2.obj((chunk, encoding, callback) => {
 		zipFile2 = chunk;

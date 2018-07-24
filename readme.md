@@ -43,9 +43,9 @@ Type: `Object`
 Type: `boolean`<br>
 Default: `true`
 
-##### mtime
+##### modifiedTime
 
-If this optional field is specified, then its value will be assigned as the modification timestamp for all files added to the zip archive. Setting it to an invariant across executions will make the resulting zip archive's hash a means for detecting file content changes.
+If this optional field is specified, then its value will be assigned as the modification timestamp for all files added to the zip archive. Setting it to the same value across executions is a way to create stable zip archives--archives that change only when the contents of their entries change, regardless of whether those entries were "touched" or regenerated.
 
 Type: `Date`<br>
 Default: `undefined`
