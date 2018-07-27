@@ -6,14 +6,14 @@ const through = require('through2');
 const Yazl = require('yazl');
 const getStream = require('get-stream');
 
-module.exports = (filename, opts) => {
+module.exports = (filename, options) => {
 	if (!filename) {
 		throw new PluginError('gulp-zip', '`filename` required');
 	}
 
-	opts = Object.assign({
+	options = Object.assign({
 		compress: true
-	}, opts);
+	}, options);
 
 	let firstFile;
 	const zip = new Yazl.ZipFile();
@@ -33,13 +33,13 @@ module.exports = (filename, opts) => {
 
 		if (file.isNull() && file.stat && file.stat.isDirectory && file.stat.isDirectory()) {
 			zip.addEmptyDirectory(pathname, {
-				mtime: opts.modifiedTime || file.stat.mtime || new Date(),
+				mtime: options.modifiedTime || file.stat.mtime || new Date(),
 				mode: file.stat.mode
 			});
 		} else {
 			const stat = {
-				compress: opts.compress,
-				mtime: opts.modifiedTime || (file.stat ? file.stat.mtime : new Date()),
+				compress: options.compress,
+				mtime: options.modifiedTime || (file.stat ? file.stat.mtime : new Date()),
 				mode: file.stat ? file.stat.mode : null
 			};
 
