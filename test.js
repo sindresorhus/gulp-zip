@@ -2,9 +2,11 @@ import fs from 'fs';
 import path from 'path';
 import test from 'ava';
 import Vinyl from 'vinyl';
+import through2 from 'through2';
 import unzip from 'decompress-unzip';
 import vinylAssign from 'vinyl-assign';
 import vinylFile from 'vinyl-file';
+import yazl from 'yazl';
 import zip from '.';
 
 test.cb('should zip files', t => {
@@ -113,4 +115,99 @@ test.cb('should not skip empty directories', t => {
 
 	stream.pipe(vinylAssign({extract: true})).pipe(unzipper);
 	stream.end();
+});
+
+test.cb('when `options.modifiedTime` is specified, should override files\' actual `mtime`s', t => {
+	// Create an arbitrary modification timestamp.
+	const modifiedTime = new Date();
+
+	// Set up a pipeline to zip and unzip files.
+	const stream = zip('test.zip', {modifiedTime});
+	const unzipper = unzip();
+	stream.pipe(vinylAssign({extract: true})).pipe(unzipper);
+
+	// Save each file to an array as it emerges from the end of the pipeline.
+	const files = [];
+	unzipper.on('data', files.push.bind(files));
+
+	// Once the pipeline has completed, ensure that all files that went through it have the manually specified
+	// timestamp (to the granularity that the zip format supports).
+	unzipper.on('end', () => {
+		for (const file of files) {
+			t.deepEqual(yazl.dateToDosDateTime(file.stat.mtime), yazl.dateToDosDateTime(modifiedTime));
+		}
+		t.end();
+	});
+
+	// Send the fixture file through the pipeline as a test case of a file having a real modification timestamp.
+	const fixtureFile = vinylFile.readSync(path.join(__dirname, 'fixture/fixture.txt'), {buffer: false});
+	stream.write(fixtureFile);
+
+	// Send a fake file through the pipeline as another test case of a file with a different modification timestamp.
+	const fakeFile = new Vinyl({
+		cwd: __dirname,
+		base: path.join(__dirname, 'fixture'),
+		path: path.join(__dirname, 'fixture/fake.txt'),
+		contents: Buffer.from('hello world'),
+		stat: {
+			mode: 0,
+			mtime: new Date(0)
+		}
+	});
+	stream.write(fakeFile);
+
+	stream.end();
+});
+
+test.cb('when `options.modifiedTime` is specified, should create identical zips when ' +
+	'files\' `mtime`s change but their content doesn\'t', t => {
+	// Create an arbitrary modification timestamp.
+	const modifiedTime = new Date();
+
+	// Set up two independent pipelines to create and capture zip files as a Vinyl objects.
+	const stream1 = zip('test1.zip', {modifiedTime});
+	let zipFile1;
+	stream1.pipe(through2.obj((chunk, encoding, callback) => {
+		zipFile1 = chunk;
+		callback();
+	}));
+
+	const stream2 = zip('test2.zip', {modifiedTime});
+	let zipFile2;
+	stream2.pipe(through2.obj((chunk, encoding, callback) => {
+		zipFile2 = chunk;
+		callback();
+	}));
+
+	// Ensure that the binary contents of the two zip files are identical after both pipelines have completed.
+	stream1.on('end', () => {
+		stream2.on('end', () => {
+			t.is(zipFile1.contents.compare(zipFile2.contents), 0);
+			t.end();
+		});
+	});
+
+	// Send a fake file through the first pipeline.
+	stream1.end(new Vinyl({
+		cwd: __dirname,
+		base: path.join(__dirname, 'fixture'),
+		path: path.join(__dirname, 'fixture/fake.txt'),
+		contents: Buffer.from('hello world'),
+		stat: {
+			mode: 0,
+			mtime: new Date(0)
+		}
+	}));
+
+	// Send a fake file through the second pipeline with the same contents but a different timestamp.
+	stream2.end(new Vinyl({
+		cwd: __dirname,
+		base: path.join(__dirname, 'fixture'),
+		path: path.join(__dirname, 'fixture/fake.txt'),
+		contents: Buffer.from('hello world'),
+		stat: {
+			mode: 0,
+			mtime: new Date(999999999999)
+		}
+	}));
 });

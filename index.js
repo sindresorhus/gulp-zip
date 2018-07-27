@@ -33,13 +33,13 @@ module.exports = (filename, opts) => {
 
 		if (file.isNull() && file.stat && file.stat.isDirectory && file.stat.isDirectory()) {
 			zip.addEmptyDirectory(pathname, {
-				mtime: file.stat.mtime || new Date(),
+				mtime: opts.modifiedTime || file.stat.mtime || new Date(),
 				mode: file.stat.mode
 			});
 		} else {
 			const stat = {
 				compress: opts.compress,
-				mtime: file.stat ? file.stat.mtime : new Date(),
+				mtime: opts.modifiedTime || (file.stat ? file.stat.mtime : new Date()),
 				mode: file.stat ? file.stat.mode : null
 			};
 
