@@ -1,18 +1,19 @@
 'use strict';
 const path = require('path');
-const gutil = require('gulp-util');
+const Vinyl = require('vinyl');
+const PluginError = require('plugin-error');
 const through = require('through2');
 const Yazl = require('yazl');
 const getStream = require('get-stream');
 
-module.exports = (filename, opts) => {
+module.exports = (filename, options) => {
 	if (!filename) {
-		throw new gutil.PluginError('gulp-zip', '`filename` required');
+		throw new PluginError('gulp-zip', '`filename` required');
 	}
 
-	opts = Object.assign({
+	options = Object.assign({
 		compress: true
-	}, opts);
+	}, options);
 
 	let firstFile;
 	const zip = new Yazl.ZipFile();
@@ -32,13 +33,13 @@ module.exports = (filename, opts) => {
 
 		if (file.isNull() && file.stat && file.stat.isDirectory && file.stat.isDirectory()) {
 			zip.addEmptyDirectory(pathname, {
-				mtime: file.stat.mtime || new Date(),
+				mtime: options.modifiedTime || file.stat.mtime || new Date(),
 				mode: file.stat.mode
 			});
 		} else {
 			const stat = {
-				compress: opts.compress,
-				mtime: file.stat ? file.stat.mtime : new Date(),
+				compress: options.compress,
+				mtime: options.modifiedTime || (file.stat ? file.stat.mtime : new Date()),
 				mode: file.stat ? file.stat.mode : null
 			};
 
@@ -59,7 +60,7 @@ module.exports = (filename, opts) => {
 		}
 
 		getStream.buffer(zip.outputStream).then(data => {
-			this.push(new gutil.File({
+			this.push(new Vinyl({
 				cwd: firstFile.cwd,
 				base: firstFile.base,
 				path: path.join(firstFile.base, filename),
