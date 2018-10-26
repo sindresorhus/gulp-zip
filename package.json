@@ -28,6 +28,7 @@
 		"file"
 	],
 	"dependencies": {
+		"@types/node": "^10.12.0",
 		"get-stream": "^3.0.0",
 		"plugin-error": "^0.1.2",
 		"through2": "^2.0.1",
@@ -38,6 +39,7 @@
 		"ava": "*",
 		"decompress-unzip": "^3.0.0",
 		"gulp": "^3.9.1",
+		"tsd-check": "^0.2.1",
 		"vinyl-assign": "^1.2.1",
 		"vinyl-file": "^3.0.0",
 		"xo": "*"
