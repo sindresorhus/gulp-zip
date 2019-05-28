@@ -15,7 +15,10 @@ test.cb('should zip files', t => {
 	const stats = fs.statSync(path.join(__dirname, 'fixture/fixture.txt'));
 	const files = [];
 
-	unzipper.on('data', files.push.bind(files));
+	unzipper.on('data', file => {
+		files.push(file);
+	});
+
 	unzipper.on('end', () => {
 		t.is(files[0].path, 'fixture.txt');
 		t.is(files[1].path, 'fixture2.txt');
@@ -65,7 +68,10 @@ test.cb('should zip files (using streams)', t => {
 	const unzipper = unzip();
 	const files = [];
 
-	unzipper.on('data', files.push.bind(files));
+	unzipper.on('data', file => {
+		files.push(file);
+	});
+
 	unzipper.on('end', () => {
 		t.is(files[0].path, 'fixture/fixture.txt');
 		t.is(files[0].contents.toString(), 'hello world\n');
@@ -93,7 +99,10 @@ test.cb('should not skip empty directories', t => {
 		}
 	};
 
-	unzipper.on('data', files.push.bind(files));
+	unzipper.on('data', file => {
+		files.push(file);
+	});
+
 	unzipper.on('end', () => {
 		t.is(files[0].path, 'foo');
 		t.end();
@@ -128,7 +137,9 @@ test.cb('when `options.modifiedTime` is specified, should override files\' actua
 
 	// Save each file to an array as it emerges from the end of the pipeline.
 	const files = [];
-	unzipper.on('data', files.push.bind(files));
+	unzipper.on('data', file => {
+		files.push(file);
+	});
 
 	// Once the pipeline has completed, ensure that all files that went through it have the manually specified
 	// timestamp (to the granularity that the zip format supports).
@@ -136,6 +147,7 @@ test.cb('when `options.modifiedTime` is specified, should override files\' actua
 		for (const file of files) {
 			t.deepEqual(yazl.dateToDosDateTime(file.stat.mtime), yazl.dateToDosDateTime(modifiedTime));
 		}
+
 		t.end();
 	});
 

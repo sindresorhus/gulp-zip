@@ -28,7 +28,7 @@ gulp.task('default', () =>
 
 Supports [streaming mode](https://github.com/gulpjs/gulp/blob/master/docs/API.md#optionsbuffer).
 
-### zip(filename, [options])
+### zip(filename, options?)
 
 #### filename
 
@@ -36,7 +36,7 @@ Type: `string`
 
 #### options
 
-Type: `Object`
+Type: `object`
 
 ##### compress
 
@@ -50,9 +50,4 @@ Default: `undefined`
 
 Overrides the modification timestamp for all files added to the archive.
 
-Tip: Setting it to the same value across executions enables you to create stable archives—archives that change only when the contents of their entries change, regardless of whether those entries were "touched" or regenerated.
-
-
-## License
-
-MIT © [Sindre Sorhus](https://sindresorhus.com)
+Tip: Setting it to the same value across executions enables you to create stable archives that change only when the contents of their entries change, regardless of whether those entries were "touched" or regenerated.

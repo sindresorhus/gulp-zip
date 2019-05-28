@@ -11,14 +11,15 @@ module.exports = (filename, options) => {
 		throw new PluginError('gulp-zip', '`filename` required');
 	}
 
-	options = Object.assign({
-		compress: true
-	}, options);
+	options = {
+		compress: true,
+		...options
+	};
 
 	let firstFile;
 	const zip = new Yazl.ZipFile();
 
-	return through.obj((file, enc, cb) => {
+	return through.obj((file, encoding, callback) => {
 		if (!firstFile) {
 			firstFile = file;
 		}
@@ -27,7 +28,7 @@ module.exports = (filename, options) => {
 		const pathname = file.relative.replace(/\\/g, '/');
 
 		if (!pathname) {
-			cb();
+			callback();
 			return;
 		}
 
@@ -52,14 +53,16 @@ module.exports = (filename, options) => {
 			}
 		}
 
-		cb();
-	}, function (cb) {
+		callback();
+	}, function (callback) {
 		if (!firstFile) {
-			cb();
+			callback();
 			return;
 		}
 
-		getStream.buffer(zip.outputStream).then(data => {
+		(async () => {
+			const data = await getStream.buffer(zip.outputStream);
+
 			this.push(new Vinyl({
 				cwd: firstFile.cwd,
 				base: firstFile.base,
@@ -67,8 +70,8 @@ module.exports = (filename, options) => {
 				contents: data
 			}));
 
-			cb();
-		});
+			callback();
+		})();
 
 		zip.end();
 	});
