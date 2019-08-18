@@ -2,7 +2,7 @@
 const gulp = require('gulp');
 const zip = require('.');
 
-gulp.task('default', () =>
+exports.default = () => (
 	gulp.src('fixture/fixture.txt')
 		.pipe(zip('test.zip'))
 		.pipe(gulp.dest('dest'))

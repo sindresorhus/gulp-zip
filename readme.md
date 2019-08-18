@@ -16,7 +16,7 @@ $ npm install --save-dev gulp-zip
 const gulp = require('gulp');
 const zip = require('gulp-zip');
 
-gulp.task('default', () =>
+exports.default = () => (
 	gulp.src('src/*')
 		.pipe(zip('archive.zip'))
 		.pipe(gulp.dest('dist'))

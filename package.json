@@ -35,7 +35,7 @@
 		"yazl": "^2.5.1"
 	},
 	"devDependencies": {
-		"ava": "^1.4.1",
+		"ava": "^2.3.0",
 		"decompress-unzip": "^3.0.0",
 		"gulp": "^4.0.2",
 		"vinyl-assign": "^1.2.1",
