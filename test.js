@@ -96,7 +96,8 @@ test.cb('should not skip empty directories', t => {
 	const stats = {
 		isDirectory() {
 			return true;
-		}
+		},
+		mode: 0o644
 	};
 
 	unzipper.on('data', file => {
@@ -105,6 +106,7 @@ test.cb('should not skip empty directories', t => {
 
 	unzipper.on('end', () => {
 		t.is(files[0].path, 'foo');
+		t.is(files[0].stat.mode, 0o755);
 		t.end();
 	});
 
