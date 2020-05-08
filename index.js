@@ -37,7 +37,7 @@ module.exports = (filename, options) => {
 				mtime: options.modifiedTime || file.stat.mtime || new Date(),
 				// Set executable bit on directories if any other bits are set for that user/group/all
 				// Fixes creating unusable zip files on platforms that do not use an executable bit
-				mode: file.stat.mode | (((file.stat.mode >> 1) | (file.stat.mode >> 2)) & 73) // 73 = 0111
+				mode: file.stat.mode | (((file.stat.mode >> 1) | (file.stat.mode >> 2)) & 0o111)
 			});
 		} else {
 			const stat = {
