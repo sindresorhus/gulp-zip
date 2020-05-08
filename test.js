@@ -73,7 +73,7 @@ test.cb('should zip files (using streams)', t => {
 	});
 
 	unzipper.on('end', () => {
-		t.is(files[0].path, 'fixture/fixture.txt');
+		t.is(path.normalize(files[0].path), path.normalize('fixture/fixture.txt'));
 		t.is(files[0].contents.toString(), 'hello world\n');
 		t.is(files[0].stat.mode, stats.mode);
 		t.end();
