@@ -34,10 +34,11 @@ module.exports = (filename, options) => {
 
 		if (file.isNull() && file.stat && file.stat.isDirectory && file.stat.isDirectory()) {
 			zip.addEmptyDirectory(pathname, {
-				mtime: options.modifiedTime || file.stat.mtime || new Date(),
-				// Set executable bit on directories if any other bits are set for that user/group/all
-				// Fixes creating unusable zip files on platforms that do not use an executable bit
-				mode: file.stat.mode | (((file.stat.mode >> 1) | (file.stat.mode >> 2)) & 0o111)
+				mtime: options.modifiedTime || file.stat.mtime || new Date()
+				// Do *not* pass a mode for a directory, creates platform-dependent zip
+				//   files (zip files created on Windows that cannot be opened on MacOS).
+				// Re-enable if this PR is resolved: https://github.com/thejoshwolfe/yazl/pull/59
+				// mode: file.stat.mode
 			});
 		} else {
 			const stat = {
