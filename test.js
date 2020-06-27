@@ -73,7 +73,7 @@ test.cb('should zip files (using streams)', t => {
 	});
 
 	unzipper.on('end', () => {
-		t.is(files[0].path, 'fixture/fixture.txt');
+		t.is(path.normalize(files[0].path), path.normalize('fixture/fixture.txt'));
 		t.is(files[0].contents.toString(), 'hello world\n');
 		t.is(files[0].stat.mode, stats.mode);
 		t.end();
@@ -96,7 +96,8 @@ test.cb('should not skip empty directories', t => {
 	const stats = {
 		isDirectory() {
 			return true;
-		}
+		},
+		mode: 0o664
 	};
 
 	unzipper.on('data', file => {
@@ -105,6 +106,7 @@ test.cb('should not skip empty directories', t => {
 
 	unzipper.on('end', () => {
 		t.is(files[0].path, 'foo');
+		t.is(files[0].stat.mode & 0o777, 0o775);
 		t.end();
 	});
 

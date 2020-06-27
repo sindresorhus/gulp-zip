@@ -34,8 +34,11 @@ module.exports = (filename, options) => {
 
 		if (file.isNull() && file.stat && file.stat.isDirectory && file.stat.isDirectory()) {
 			zip.addEmptyDirectory(pathname, {
-				mtime: options.modifiedTime || file.stat.mtime || new Date(),
-				mode: file.stat.mode
+				mtime: options.modifiedTime || file.stat.mtime || new Date()
+				// Do *not* pass a mode for a directory, because it creates platform-dependent
+				// ZIP files (ZIP files created on Windows that cannot be opened on macOS).
+				// Re-enable if this PR is resolved: https://github.com/thejoshwolfe/yazl/pull/59
+				// mode: file.stat.mode
 			});
 		} else {
 			const stat = {
