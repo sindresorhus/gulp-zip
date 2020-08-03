@@ -1,5 +1,4 @@
 import fs from 'fs';
-import {randomFillSync} from 'crypto';
 import path from 'path';
 import test from 'ava';
 import Vinyl from 'vinyl';
@@ -245,7 +244,7 @@ test.cb('should produce a stream if requested', t => {
 });
 
 test.cb('should explain buffer size errors', t => {
-	const stream = zip('test.zip');
+	const stream = zip('test.zip', {compress: false});
 	const unzipper = unzip();
 	const stats = fs.statSync(path.join(__dirname, 'fixture/fixture.txt'));
 	stream.pipe(vinylAssign({extract: true})).pipe(unzipper);
@@ -255,10 +254,9 @@ test.cb('should explain buffer size errors', t => {
 		t.end();
 	});
 
-	// Produce some giant random data files, which zipped together should cause the zip
+	// Produce some giant data files, which zipped together should cause the zip
 	// to exceed Buffer MAX_LENGTH without individually doing that
 	const contents = Buffer.alloc((2 ** 30) - 1);
-	randomFillSync(contents);
 	for (let i = 0; i < 3; i++) {
 		const fakeFile = new Vinyl({
 			cwd: __dirname,

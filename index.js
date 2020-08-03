@@ -72,8 +72,9 @@ module.exports = (filename, options) => {
 				try {
 					data = await getStream.buffer(zip.outputStream);
 				} catch (error) {
-					if (error.code === 'ERR_INVALID_OPT_VALUE') {
+					if (error instanceof RangeError && (!error.code || error.code === 'ERR_INVALID_OPT_VALUE' || error.code === 'ERR_OUT_OF_RANGE')) {
 						callback(new PluginError('gulp-zip', 'The output zip file is too big to store in a buffer (larger than Buffer MAX_LENGTH). Try using the streamOutput option.'));
+						return;
 					}
 
 					callback(error);
