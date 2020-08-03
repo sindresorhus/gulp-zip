@@ -38,7 +38,6 @@
 		"ava": "^2.3.0",
 		"decompress-unzip": "^3.0.0",
 		"gulp": "^4.0.2",
-		"unzip-stream": "^0.3.0",
 		"vinyl-assign": "^1.2.1",
 		"vinyl-file": "^3.0.0",
 		"xo": "^0.24.0"
