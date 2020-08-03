@@ -78,6 +78,7 @@ module.exports = (filename, options) => {
 					}
 
 					callback(error);
+					return;
 				}
 			}
 
