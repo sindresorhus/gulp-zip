@@ -13,6 +13,7 @@ module.exports = (filename, options) => {
 
 	options = {
 		compress: true,
+		streamOutput: false,
 		...options
 	};
 
@@ -64,7 +65,20 @@ module.exports = (filename, options) => {
 		}
 
 		(async () => {
-			const data = await getStream.buffer(zip.outputStream);
+			let data;
+			if (options.streamOutput) {
+				data = zip.outputStream;
+			} else {
+				try {
+					data = await getStream.buffer(zip.outputStream);
+				} catch (error) {
+					if (error.code === 'ERR_INVALID_OPT_VALUE') {
+						callback(new PluginError('gulp-zip', 'The output zip file is too big to store in a buffer (larger than Buffer MAX_LENGTH). Try using the streamOutput option.'));
+					}
+
+					callback(error);
+				}
+			}
 
 			this.push(new Vinyl({
 				cwd: firstFile.cwd,

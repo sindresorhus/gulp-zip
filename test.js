@@ -1,4 +1,5 @@
 import fs from 'fs';
+import {randomFillSync} from 'crypto';
 import path from 'path';
 import test from 'ava';
 import Vinyl from 'vinyl';
@@ -32,6 +33,7 @@ test.cb('should zip files', t => {
 	stream.on('data', file => {
 		t.is(path.normalize(file.path), path.join(__dirname, 'fixture/test.zip'));
 		t.is(file.relative, 'test.zip');
+		t.true(file.isBuffer());
 		t.true(file.contents.length > 0);
 	});
 
@@ -224,4 +226,49 @@ test.cb('when `options.modifiedTime` is specified, should create identical zips 
 			mtime: new Date(999999999999)
 		}
 	}));
+});
+
+test.cb('should produce a stream if requested', t => {
+	const stream = zip('test.zip', {streamOutput: true});
+	const file = vinylFile.readSync(path.join(__dirname, 'fixture/fixture.txt'));
+
+	stream.on('data', file => {
+		t.true(file.isStream());
+	});
+
+	stream.on('end', () => {
+		t.end();
+	});
+
+	stream.write(file);
+	stream.end();
+});
+
+test.cb('should explain buffer size errors', t => {
+	const stream = zip('test.zip');
+	const unzipper = unzip();
+	const stats = fs.statSync(path.join(__dirname, 'fixture/fixture.txt'));
+	stream.pipe(vinylAssign({extract: true})).pipe(unzipper);
+
+	stream.on('error', error => {
+		t.is(error.message, 'The output zip file is too big to store in a buffer (larger than Buffer MAX_LENGTH). Try using the streamOutput option.');
+		t.end();
+	});
+
+	// Produce some giant random data files, which zipped together should cause the zip
+	// to exceed Buffer MAX_LENGTH without individually doing that
+	const contents = Buffer.alloc((2 ** 30) - 1);
+	randomFillSync(contents);
+	for (let i = 0; i < 3; i++) {
+		const fakeFile = new Vinyl({
+			cwd: __dirname,
+			base: path.join(__dirname, 'fixture'),
+			path: path.join(__dirname, `fixture/fixture${i}.txt`),
+			contents,
+			stat: stats
+		});
+		stream.write(fakeFile);
+	}
+
+	stream.end();
 });
