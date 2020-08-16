@@ -14,7 +14,6 @@ module.exports = (filename, options) => {
 
 	options = {
 		compress: true,
-		streamOutput: false,
 		...options
 	};
 
