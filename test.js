@@ -227,37 +227,26 @@ test.cb('when `options.modifiedTime` is specified, should create identical zips 
 	}));
 });
 
-test.cb('should produce a stream if requested', t => {
-	const stream = zip('test.zip', {streamOutput: true});
-	const file = vinylFile.readSync(path.join(__dirname, 'fixture/fixture.txt'));
-
-	stream.on('data', file => {
-		t.true(file.isStream());
-	});
-
-	stream.on('end', () => {
-		t.end();
-	});
-
-	stream.write(file);
-	stream.end();
-});
-
-test.cb('should explain buffer size errors', t => {
-	const stream = zip('test.zip', {compress: false});
-	const unzipper = unzip();
+test.cb('should automatically switch to streaming if the output file is larger than Buffer MAX_LENGTH', t => {
+	const bigStream = zip('test.zip', {compress: false});
 	const stats = fs.statSync(path.join(__dirname, 'fixture/fixture.txt'));
-	stream.pipe(vinylAssign({extract: true})).pipe(unzipper);
 
-	stream.on('error', error => {
-		t.is(error.message, 'The output zip file is too big to store in a buffer (larger than Buffer MAX_LENGTH). Try using the streamOutput option.');
+	bigStream.on('data', file => {
+		t.is(file.isStream(), true);
+	});
+
+	bigStream.on('error', error => {
+		t.fail(error);
+	});
+
+	bigStream.on('end', () => {
 		t.end();
 	});
 
 	// Produce some giant data files, which zipped together should cause the zip
 	// to exceed Buffer MAX_LENGTH without individually doing that
-	const contents = Buffer.alloc((2 ** 30) - 1);
-	for (let i = 0; i < 3; i++) {
+	const contents = Buffer.allocUnsafe((2 ** 30) - 1);
+	for (let i = 0; i < 2; i++) {
 		const fakeFile = new Vinyl({
 			cwd: __dirname,
 			base: path.join(__dirname, 'fixture'),
@@ -265,8 +254,8 @@ test.cb('should explain buffer size errors', t => {
 			contents,
 			stat: stats
 		});
-		stream.write(fakeFile);
+		bigStream.write(fakeFile);
 	}
 
-	stream.end();
+	bigStream.end();
 });

@@ -67,17 +67,12 @@ module.exports = (filename, options) => {
 
 		(async () => {
 			let data;
-			if (options.streamOutput) {
-				data = zip.outputStream;
-			} else {
-				try {
-					data = await getStream.buffer(zip.outputStream, {maxBuffer: BufferConstants.MAX_LENGTH});
-				} catch (error) {
-					if (error instanceof getStream.MaxBufferError) {
-						callback(new PluginError('gulp-zip', 'The output zip file is too big to store in a buffer (larger than Buffer MAX_LENGTH). Try using the streamOutput option.'));
-						return;
-					}
-
+			try {
+				data = await getStream.buffer(zip.outputStream, {maxBuffer: BufferConstants.MAX_LENGTH});
+			} catch (error) {
+				if (error instanceof getStream.MaxBufferError) {
+					data = zip.outputStream;
+				} else {
 					callback(error);
 					return;
 				}
