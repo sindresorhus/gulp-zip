@@ -1,4 +1,4 @@
-# gulp-zip [![Build Status](https://travis-ci.org/sindresorhus/gulp-zip.svg?branch=master)](https://travis-ci.org/sindresorhus/gulp-zip)
+# gulp-zip
 
 > ZIP compress files
 
