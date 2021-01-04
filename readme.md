@@ -26,6 +26,8 @@ exports.default = () => (
 
 ## API
 
+Supports [streaming mode](https://github.com/gulpjs/gulp/blob/master/docs/API.md#optionsbuffer).
+
 ### zip(filename, options?)
 
 #### filename
