@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import {constants as BufferConstants} from 'buffer';
 import test from 'ava';
 import Vinyl from 'vinyl';
 import through2 from 'through2';
@@ -270,19 +271,27 @@ test.cb('should explain buffer size errors', t => {
 		t.end();
 	});
 
-	// Produce some giant data files, which zipped together should cause the zip
-	// to exceed Buffer MAX_LENGTH without individually doing that
-	const contents = Buffer.allocUnsafe((2 ** 30) - 1);
-	for (let i = 0; i < 2; i++) {
-		const fakeFile = new Vinyl({
+	function addFile(contents) {
+		stream.write(new Vinyl({
 			cwd: __dirname,
 			base: path.join(__dirname, 'fixture'),
-			path: path.join(__dirname, `fixture/fixture${i}.txt`),
+			path: path.join(__dirname, 'fixture/file.txt'),
 			contents,
 			stat: stats
-		});
-		stream.write(fakeFile);
+		}));
 	}
+
+	// Yazl internally enforces a lower max buffer size than MAX_LENGTH
+	const maxYazlBuffer = 1073741823;
+
+	// Produce some giant data files to exceed max length but staying under Yazl's maximum
+	const filesNeeded = Math.floor(BufferConstants.MAX_LENGTH / maxYazlBuffer);
+	for (let files = 0; files < filesNeeded; files++) {
+		addFile(Buffer.allocUnsafe(maxYazlBuffer));
+	}
+
+	// Pad all the way up to BufferConstants.MAX_LENGTH
+	addFile(Buffer.allocUnsafe(BufferConstants.MAX_LENGTH % maxYazlBuffer));
 
 	stream.end();
 });
