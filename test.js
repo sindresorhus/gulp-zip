@@ -227,19 +227,46 @@ test.cb('when `options.modifiedTime` is specified, should create identical zips 
 	}));
 });
 
-test.cb('should automatically switch to streaming if the output file is larger than Buffer MAX_LENGTH', t => {
-	const bigStream = zip('test.zip', {compress: false});
+test.cb('should produce a buffer by default', t => {
+	const stream = zip('test.zip');
+	const file = vinylFile.readSync(path.join(__dirname, 'fixture/fixture.txt'));
+
+	stream.on('data', file => {
+		t.true(file.isBuffer());
+	});
+
+	stream.on('end', () => {
+		t.end();
+	});
+
+	stream.write(file);
+	stream.end();
+});
+
+test.cb('should produce a stream if requested', t => {
+	const stream = zip('test.zip', {buffer: false});
+	const file = vinylFile.readSync(path.join(__dirname, 'fixture/fixture.txt'));
+
+	stream.on('data', file => {
+		t.true(file.isStream());
+	});
+
+	stream.on('end', () => {
+		t.end();
+	});
+
+	stream.write(file);
+	stream.end();
+});
+
+test.cb('should explain buffer size errors', t => {
+	const stream = zip('test.zip', {compress: false});
+	const unzipper = unzip();
 	const stats = fs.statSync(path.join(__dirname, 'fixture/fixture.txt'));
+	stream.pipe(vinylAssign({extract: true})).pipe(unzipper);
 
-	bigStream.on('data', file => {
-		t.is(file.isStream(), true);
-	});
-
-	bigStream.on('error', error => {
-		t.fail(error);
-	});
-
-	bigStream.on('end', () => {
+	stream.on('error', error => {
+		t.is(error.message, 'The output zip file is too big to store in a buffer (larger than Buffer MAX_LENGTH). To output a stream instead, set the gulp-zip buffer option to \'false\'.');
 		t.end();
 	});
 
@@ -254,8 +281,9 @@ test.cb('should automatically switch to streaming if the output file is larger t
 			contents,
 			stat: stats
 		});
-		bigStream.write(fakeFile);
+		stream.write(fakeFile);
 	}
 
-	bigStream.end();
+	stream.end();
 });
+
