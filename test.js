@@ -267,7 +267,7 @@ test.cb('should explain buffer size errors', t => {
 	stream.pipe(vinylAssign({extract: true})).pipe(unzipper);
 
 	stream.on('error', error => {
-		t.is(error.message, 'The output zip file is too big to store in a buffer (larger than Buffer MAX_LENGTH). To output a stream instead, set the gulp-zip buffer option to \'false\'.');
+		t.is(error.message, 'The output ZIP file is too big to store in a buffer (larger than Buffer MAX_LENGTH). To output a stream instead, set the gulp-zip buffer option to `false`.');
 		t.end();
 	});
 
