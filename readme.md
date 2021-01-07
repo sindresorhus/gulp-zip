@@ -57,7 +57,7 @@ Tip: Setting it to the same value across executions enables you to create stable
 Type: `boolean`<br>
 Default: `true`
 
-If `true`, the resulting zip file contents will be a buffer. Large zip files may not be possible to buffer, depending on the size of [Buffer MAX_LENGTH](https://nodejs.org/api/buffer.html#buffer_buffer_constants_max_length).
-If `false`, the zip file contents will be a stream.
+If `true`, the resulting ZIP file contents will be a buffer. Large zip files may not be possible to buffer, depending on the size of [Buffer MAX_LENGTH](https://nodejs.org/api/buffer.html#buffer_buffer_constants_max_length).
+If `false`, the ZIP file contents will be a stream.
 
 Similar to [gulp.src's `buffer` option](https://gulpjs.com/docs/en/api/src/#options).
