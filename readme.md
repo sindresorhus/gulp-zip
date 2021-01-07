@@ -61,3 +61,5 @@ If `true`, the resulting ZIP file contents will be a buffer. Large zip files may
 If `false`, the ZIP file contents will be a stream.
 
 Similar to [gulp.src's `buffer` option](https://gulpjs.com/docs/en/api/src/#options).
+
+Tip: set this to `false` to allow creating ZIP files larger than Node's maximum buffer length.
