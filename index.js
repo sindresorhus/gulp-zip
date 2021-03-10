@@ -1,5 +1,6 @@
 'use strict';
 const path = require('path');
+const BufferConstants = require('buffer').constants;
 const Vinyl = require('vinyl');
 const PluginError = require('plugin-error');
 const through = require('through2');
@@ -13,6 +14,7 @@ module.exports = (filename, options) => {
 
 	options = {
 		compress: true,
+		buffer: true,
 		...options
 	};
 
@@ -64,7 +66,22 @@ module.exports = (filename, options) => {
 		}
 
 		(async () => {
-			const data = await getStream.buffer(zip.outputStream);
+			let data;
+			if (options.buffer) {
+				try {
+					data = await getStream.buffer(zip.outputStream, {maxBuffer: BufferConstants.MAX_LENGTH});
+				} catch (error) {
+					if (error instanceof getStream.MaxBufferError) {
+						callback(new PluginError('gulp-zip', 'The output ZIP file is too big to store in a buffer (larger than Buffer MAX_LENGTH). To output a stream instead, set the gulp-zip buffer option to `false`.'));
+					} else {
+						callback(error);
+					}
+
+					return;
+				}
+			} else {
+				data = zip.outputStream;
+			}
 
 			this.push(new Vinyl({
 				cwd: firstFile.cwd,

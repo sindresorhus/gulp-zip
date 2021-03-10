@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import {constants as BufferConstants} from 'buffer';
 import test from 'ava';
 import Vinyl from 'vinyl';
 import through2 from 'through2';
@@ -32,6 +33,7 @@ test.cb('should zip files', t => {
 	stream.on('data', file => {
 		t.is(path.normalize(file.path), path.join(__dirname, 'fixture/test.zip'));
 		t.is(file.relative, 'test.zip');
+		t.true(file.isBuffer());
 		t.true(file.contents.length > 0);
 	});
 
@@ -225,3 +227,72 @@ test.cb('when `options.modifiedTime` is specified, should create identical zips 
 		}
 	}));
 });
+
+test.cb('should produce a buffer by default', t => {
+	const stream = zip('test.zip');
+	const file = vinylFile.readSync(path.join(__dirname, 'fixture/fixture.txt'));
+
+	stream.on('data', file => {
+		t.true(file.isBuffer());
+	});
+
+	stream.on('end', () => {
+		t.end();
+	});
+
+	stream.write(file);
+	stream.end();
+});
+
+test.cb('should produce a stream if requested', t => {
+	const stream = zip('test.zip', {buffer: false});
+	const file = vinylFile.readSync(path.join(__dirname, 'fixture/fixture.txt'));
+
+	stream.on('data', file => {
+		t.true(file.isStream());
+	});
+
+	stream.on('end', () => {
+		t.end();
+	});
+
+	stream.write(file);
+	stream.end();
+});
+
+test.cb('should explain buffer size errors', t => {
+	const stream = zip('test.zip', {compress: false});
+	const unzipper = unzip();
+	const stats = fs.statSync(path.join(__dirname, 'fixture/fixture.txt'));
+	stream.pipe(vinylAssign({extract: true})).pipe(unzipper);
+
+	stream.on('error', error => {
+		t.is(error.message, 'The output ZIP file is too big to store in a buffer (larger than Buffer MAX_LENGTH). To output a stream instead, set the gulp-zip buffer option to `false`.');
+		t.end();
+	});
+
+	function addFile(contents) {
+		stream.write(new Vinyl({
+			cwd: __dirname,
+			base: path.join(__dirname, 'fixture'),
+			path: path.join(__dirname, 'fixture/file.txt'),
+			contents,
+			stat: stats
+		}));
+	}
+
+	// Yazl internally enforces a lower max buffer size than MAX_LENGTH
+	const maxYazlBuffer = 1073741823;
+
+	// Produce some giant data files to exceed max length but staying under Yazl's maximum
+	const filesNeeded = Math.floor(BufferConstants.MAX_LENGTH / maxYazlBuffer);
+	for (let files = 0; files < filesNeeded; files++) {
+		addFile(Buffer.allocUnsafe(maxYazlBuffer));
+	}
+
+	// Pad all the way up to BufferConstants.MAX_LENGTH
+	addFile(Buffer.allocUnsafe(BufferConstants.MAX_LENGTH % maxYazlBuffer));
+
+	stream.end();
+});
+
