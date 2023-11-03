@@ -1,9 +1,9 @@
-'use strict';
-const gulp = require('gulp');
-const zip = require('.');
+import gulp from 'gulp';
+import zip from './index.js';
 
-exports.default = () => (
-	gulp.src('fixture/fixture.txt')
+export default function main() {
+	return gulp.src('fixture/fixture.txt')
 		.pipe(zip('test.zip'))
-		.pipe(gulp.dest('dest'))
-);
+		.pipe(gulp.dest('dest'));
+}
+
