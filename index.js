@@ -20,7 +20,7 @@ export default function gulpZip(filename, options) {
 	const zip = new Yazl.ZipFile();
 
 	return gulpPlugin('gulp-zip', async file => {
-		firstFile ||= file;
+		firstFile ??= file;
 
 		// Because Windows...
 		const pathname = file.relative.replaceAll('\\', '/');
