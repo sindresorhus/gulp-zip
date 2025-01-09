@@ -31,19 +31,20 @@
 		"file"
 	],
 	"dependencies": {
-		"get-stream": "^8.0.1",
-		"gulp-plugin-extras": "^0.3.0",
+		"get-stream": "^9.0.1",
+		"gulp-plugin-extras": "^1.1.0",
 		"vinyl": "^3.0.0",
 		"yazl": "^2.5.1"
 	},
 	"devDependencies": {
-		"ava": "^5.3.1",
+		"ava": "^6.2.0",
 		"decompress-unzip": "^3.0.0",
 		"easy-transform-stream": "^1.0.1",
-		"gulp": "^4.0.2",
+		"gulp": "^5.0.0",
+		"p-event": "^6.0.1",
 		"vinyl-assign": "^1.2.1",
 		"vinyl-file": "^5.0.0",
-		"xo": "^0.56.0"
+		"xo": "^0.60.0"
 	},
 	"peerDependencies": {
 		"gulp": ">=4"
