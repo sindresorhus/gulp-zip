@@ -12,6 +12,7 @@
 	},
 	"type": "module",
 	"exports": "./index.js",
+	"sideEffects": false,
 	"engines": {
 		"node": ">=18"
 	},
@@ -34,7 +35,7 @@
 		"get-stream": "^9.0.1",
 		"gulp-plugin-extras": "^1.1.0",
 		"vinyl": "^3.0.0",
-		"yazl": "^2.5.1"
+		"yazl": "^3.3.1"
 	},
 	"devDependencies": {
 		"ava": "^6.2.0",
