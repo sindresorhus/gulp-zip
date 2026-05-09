@@ -1,8 +1,10 @@
 import {Buffer} from 'node:buffer';
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import test from 'ava';
+import gulp from 'gulp';
 import Vinyl from 'vinyl';
 import unzip from 'decompress-unzip';
 import vinylAssign from 'vinyl-assign';
@@ -94,6 +96,36 @@ test('should zip files (using streams)', async t => {
 	t.is(path.normalize(files[0].path), path.normalize('fixture/fixture.txt'));
 	t.is(files[0].contents.toString(), 'hello world\n');
 	t.is(files[0].stat.mode, stats.mode);
+});
+
+test('should zip files from a directory with square brackets in its name', async t => {
+	const temporaryDirectory = fs.mkdtempSync(path.join(os.tmpdir(), 'gulp-zip-'));
+	const sourceDirectory = path.join(temporaryDirectory, '[fixture]');
+	fs.mkdirSync(sourceDirectory);
+	fs.writeFileSync(path.join(sourceDirectory, 'fixture.txt'), 'hello brackets');
+	t.teardown(() => {
+		fs.rmSync(temporaryDirectory, {recursive: true, force: true});
+	});
+
+	const zipStream = gulp.src('*.txt', {
+		cwd: sourceDirectory,
+		base: sourceDirectory,
+	}).pipe(zip('test.zip'));
+	const unzipStream = unzip();
+	const files = [];
+
+	const finalStream = zipStream.pipe(vinylAssign({extract: true})).pipe(unzipStream);
+	const promise = pEvent(finalStream, 'end');
+
+	unzipStream.on('data', file => {
+		files.push(file);
+	});
+
+	await promise;
+
+	t.is(files.length, 1);
+	t.is(files[0].path, 'fixture.txt');
+	t.is(files[0].contents.toString(), 'hello brackets');
 });
 
 test('should not skip empty directories', async t => {
