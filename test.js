@@ -96,6 +96,47 @@ test('should zip files (using streams)', async t => {
 	t.is(files[0].stat.mode, stats.mode);
 });
 
+test('should zip files when the working directory contains square brackets', async t => {
+	const zipStream = zip('test.zip');
+	const unzipStream = unzip();
+	const files = [];
+	const cwd = path.join(__dirname, 'tmp-[brackets]');
+	const base = path.join(cwd, 'fixture');
+	const stats = fs.statSync(path.join(__dirname, 'fixture/fixture.txt'));
+
+	const promise = pEvent(unzipStream, 'end');
+
+	zipStream.pipe(vinylAssign({extract: true})).pipe(unzipStream);
+
+	unzipStream.on('data', file => {
+		files.push(file);
+	});
+
+	zipStream.on('data', file => {
+		t.is(path.normalize(file.path), path.join(base, 'test.zip'));
+		t.is(file.relative, 'test.zip');
+		t.true(file.contents.length > 0);
+	});
+
+	zipStream.write(new Vinyl({
+		cwd,
+		base,
+		path: path.join(base, 'fixture.txt'),
+		contents: Buffer.from('hello bracket'),
+		stat: {
+			mode: stats.mode,
+			mtime: stats.mtime,
+		},
+	}));
+
+	zipStream.end();
+
+	await promise;
+
+	t.is(files[0].path, 'fixture.txt');
+	t.is(files[0].contents.toString(), 'hello bracket');
+});
+
 test('should not skip empty directories', async t => {
 	const zipStream = zip('test.zip');
 	const unzipStream = unzip();
